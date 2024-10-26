@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO,
 load_dotenv()
 
 # Set up OpenAI client
-client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Define post_process_latex function here
 def post_process_latex(manim_code):
@@ -49,14 +49,16 @@ def generate_manim_visualization(query, output_folder='./output_videos'):
 Generate Manim code (Community Edition v0.17.0+) to visualize: "{query}"
 
 Requirements:
+0. LaTeX: Use single backslash for commands, e.g., \frac{{num}}{{den}} for fractions.
 1. Use latest Manim syntax (e.g., 'Create' instead of 'ShowCreation').
 2. Structure: Intro, Problem Statement, Visualization, Explanation, Conclusion.
 3. Use MathTex for math, Text for regular text. No $ symbols in MathTex.
-4. LaTeX: Use single backslash for commands, e.g., \frac{{num}}{{den}} for fractions.
-5. Only use LaTeX from: amsmath, amssymb, mathtools, physics, xcolor.
-6. Ensure readability: proper spacing, consistent fonts, colors.
-7. Use smooth animations and transitions.
-8. Code must be clean, well-commented, and organized.
+4. Only use LaTeX from: amsmath, amssymb, mathtools, physics, xcolor.
+5. Ensure readability: proper spacing, consistent fonts, colors. Make sure all the text other than the title has a font size of 24.
+6. Use smooth animations and transitions.
+7. Code must be clean, well-commented, and organized.
+8. Make sure that the render is zoomed out so that all the text is in the frame and can be seen.
+9. Have multiple scenes that are rendered and cleared before next scene comes on. Dont accept user input, instead merge all the scenes into one video.
 
 LaTeX Examples:
 - Correct: r"\frac{{a}}{{b}}"
@@ -147,7 +149,7 @@ No additional text or explanations outside the JSON structure.
     manim_start_time = time.time()
     try:
         result = subprocess.run(
-            ['manim', '-pql', manim_code_filename],
+            ['manim', '-pqh', manim_code_filename],
             check=True,
             capture_output=True,
             text=True
@@ -192,8 +194,7 @@ No additional text or explanations outside the JSON structure.
             return
 
     manim_end_time = time.time()
-    logging.info(f"Manim execution completed in {
-                 manim_end_time - manim_start_time:.2f} seconds")
+    logging.info(f"Manim execution completed in {manim_end_time - manim_start_time:.2f} seconds")
 
     # Step 5: Move the generated video to the output folder
     class_name_match = re.search(r'class\s+(\w+)\(Scene\):', manim_code)
@@ -228,8 +229,7 @@ No additional text or explanations outside the JSON structure.
 
     end_time = time.time()
     total_time = end_time - start_time
-    logging.info(f"Manim visualization process completed in {
-                 total_time:.2f} seconds")
+    logging.info(f"Manim visualization process completed in {total_time:.2f} seconds")
 
 
 # Example usage
