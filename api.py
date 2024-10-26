@@ -1,7 +1,7 @@
-from fastapi import FastAPI, UploadFile
-from pydantic import BaseModel
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+import base64
 import os
 from manim import *
 
@@ -15,26 +15,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class QueryRequest(BaseModel):  # Define a request model
-    question: str
-    image_url: str
-
+def encode_image(image_path):
+    with open(image_path, 'rb') as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
 
 @app.post("/video")
-def query_AI(query: QueryRequest):  # Use the model as a parameter
-    feed_AI(query.question)
-    output_file = r"C:\Users\loorj\OneDrive\Documents\FastAPI_Testing\FastAPI\videos\1080p60\Video.mp4"
-    output_dir = r"C:\Users\loorj\OneDrive\Documents\FastAPI_Testing\FastAPI"
-    
-    config.media_dir = output_dir # Set output directory for media files
-    config.output_file = "Video.mp4"
-    config.disable_caching = True
-    scene = SimilarTriangles()  # Create an instance of your scene
-    scene.render()
-    return FileResponse(output_file)
+async def query_AI(question: str = Form(...), image_file: UploadFile = File(...)):
+    image_path = f"temp_{image_file.filename}"
+    with open(image_path, "wb") as buffer:
+        buffer.write(await image_file.read())
+    base64_image = encode_image(image_path)
+    video = feed_AI(question, image_path)
+    #os.remove(image_path)
+    return FileResponse(video)
+    # Return a video file based on the question and image if needed
 
-def feed_AI(question):
-    print(f"ChatGTP Recieved: {question}")
-
-    #python -m uvicorn main:app --reload
-    #python -m
+def feed_AI(question, image_b64):
+    print(f"ChatGTP Recieved: {question} and {image_b64}")
+    return None
