@@ -1,1 +1,1 @@
-# HackRU
+# HackRU adts
