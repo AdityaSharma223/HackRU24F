@@ -51,25 +51,27 @@ Generate Manim code (Community Edition v0.17.0+) to visualize: "{query} in brief
 Explain at 5th grader level.
 
 Requirements:
-10. MAKE SURE NO TEXTS OVERLAP EACH OTHER EVER. Keep track of the position of each text, math equation and shape placement and make sure they never overlap.
+- Only generate visualistaions and title and no other text on the screen.
 0. LaTeX: Use single backslash for commands, e.g., \frac{{num}}{{den}} for fractions.
 1. Use latest Manim syntax (e.g., 'Create' instead of 'ShowCreation', no use of underline etc.).
 2. Structure: Intro, Problem Statement, Visualization, Explanation, Conclusion.
 3. Use MathTex for math, Text for regular text. No $ symbols in MathTex.
 4. Only use LaTeX from: amsmath, amssymb, mathtools, physics, xcolor.
-5. Ensure readability: proper spacing, consistent fonts, colors. Make sure all the text other than the title has a font size of 24 and MathTex a size of 30. Do not use font sizes for titles.
+5. Ensure readability: proper spacing, consistent fonts, colors.
 6. Use smooth animations and transitions.
 7. Code must be clean, well-commented, and organized.
-8. ONLY USE ONE CLASS FOR THE MANIM CODE.
-9. Have visuals that are rendered and cleared before next visual comes on. CLEAR ALL VISUALS BEFORE RENDERING NEW. Use the clear function before moving onto a new visual.
+9. Have visuals that are rendered and cleared before next visual comes on. CLEAR ALL VISUALS BEFORE RENDERING NEW.
+10. Use different scenes and make sure a scene goes away before a new scene.
 11. Remove the title after the showing it for the first few moments.
+
+Do not use x_range and y_range or add multiple arguments to the get_graph function
+
 
 LaTeX Examples:
 - Correct: r"\frac{{a}}{{b}}"
 - Incorrect: r"\f\frac{{a}}{{b}}" or r"\\frac{{a}}{{b}}"
 
 NEVER USE LAMBDA FUNCTIONS IN CODE
-Do not use x_range and y_range or add multiple arguments to the get_graph function
 
 Some examples
 ```python
@@ -241,4 +243,4 @@ No additional text or explanations outside the JSON structure.
 
 # Example usage
 generate_manim_visualization(
-    "Explain dot product of 2d vectors.")
+    "Explain how 2D motion works")
